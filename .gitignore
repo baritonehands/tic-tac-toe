@@ -105,3 +105,4 @@ go.work.sum
 .env
 
 gh-pages/tic-tac-toe
+!gh-pages/tic-tac-toe/web/tic-tac-toe.css
