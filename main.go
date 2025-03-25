@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 	"log"
 	"tic-tac-toe/gh-pages/components"
@@ -17,8 +18,14 @@ type App struct {
 // The Render method is where the component appearance is defined. Here, a
 // "Hello World!" is displayed as a heading.
 func (h *App) Render() app.UI {
+	text := "Hello World!"
+	if winner := h.boardComponent.Model.Winner; winner != 0 {
+		text = fmt.Sprintf("Winner: %d", winner)
+	} else if h.boardComponent.Model.GameOver {
+		text = "Cat's Game!"
+	}
 	return app.Div().Class("container").Body(
-		app.H1().Text("Hello World!"),
+		app.H1().Text(text),
 		h.boardComponent,
 	)
 }

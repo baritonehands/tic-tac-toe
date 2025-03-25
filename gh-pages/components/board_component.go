@@ -8,22 +8,22 @@ import (
 
 type Board struct {
 	app.Compo
-	model *models.Board
+	Model *models.Board
 }
 
 func NewBoard() *Board {
 	return &Board{
-		model: models.NewBoard(),
+		Model: models.NewBoard(),
 	}
 }
 
 func (b *Board) Cell(x, y byte) app.UI {
 	text := "\u00A0"
 	classes := []string{"cell"}
-	if b.model.At(x, y) == 1 {
+	if b.Model.At(x, y) == 1 {
 		text = "X"
 		classes = append(classes, "X")
-	} else if b.model.At(x, y) == 2 {
+	} else if b.Model.At(x, y) == 2 {
 		text = "O"
 		classes = append(classes, "O")
 	}
@@ -52,7 +52,7 @@ func (b *Board) Render() app.UI {
 
 func (b *Board) cellClickHandler(x, y byte) app.EventHandler {
 	return func(ctx app.Context, e app.Event) {
-		err := b.model.Move(x, y)
+		err := b.Model.Move(x, y)
 		if err != nil {
 			ctx.Reload()
 		}
