@@ -17,7 +17,7 @@ func NewBoard() *Board {
 	}
 }
 
-func (b *Board) Cell(x, y byte) app.UI {
+func (b *Board) Cell(x, y int) app.UI {
 	text := "\u00A0"
 	classes := []string{"cell"}
 	if b.Model.At(x, y) == 1 {
@@ -30,7 +30,7 @@ func (b *Board) Cell(x, y byte) app.UI {
 	return app.Div().Class(classes...).Text(text).OnClick(b.cellClickHandler(x, y))
 }
 
-func (b *Board) Row(y byte) app.UI {
+func (b *Board) Row(y int) app.UI {
 	return app.Div().Class(fmt.Sprintf("row%d", y+1)).Body(
 		b.Cell(0, y),
 		app.Div().Class("vertical").Text("\u00A0"),
@@ -41,6 +41,10 @@ func (b *Board) Row(y byte) app.UI {
 }
 
 func (b *Board) Render() app.UI {
+	if !b.Model.GameOver {
+		solver := models.Solver{Board: b.Model, AsPlayer: b.Model.CurPlayer}
+		fmt.Printf("Player %d: %v\n", solver.AsPlayer, solver.Score())
+	}
 	return app.Div().Body(
 		b.Row(0),
 		app.Div().Class("horizontal").Text("\u00A0"),
@@ -50,7 +54,7 @@ func (b *Board) Render() app.UI {
 	)
 }
 
-func (b *Board) cellClickHandler(x, y byte) app.EventHandler {
+func (b *Board) cellClickHandler(x, y int) app.EventHandler {
 	return func(ctx app.Context, e app.Event) {
 		err := b.Model.Move(x, y)
 		if err != nil {

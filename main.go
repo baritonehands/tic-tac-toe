@@ -18,9 +18,10 @@ type App struct {
 // The Render method is where the component appearance is defined. Here, a
 // "Hello World!" is displayed as a heading.
 func (h *App) Render() app.UI {
-	text := "Hello World!"
+	player := h.boardComponent.Model.CurPlayerName()
+	text := fmt.Sprintf("Current Player: %s", player)
 	if winner := h.boardComponent.Model.Winner; winner != 0 {
-		text = fmt.Sprintf("Winner: %d", winner)
+		text = fmt.Sprintf("Winner: %s", player)
 	} else if h.boardComponent.Model.GameOver {
 		text = "Cat's Game!"
 	}

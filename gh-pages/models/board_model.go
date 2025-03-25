@@ -34,15 +34,15 @@ func (board *Board) Clone() *Board {
 	return newBoard
 }
 
-func (board *Board) At(x, y byte) byte {
+func (board *Board) At(x, y int) byte {
 	return board.grid[y][x]
 }
 
 func (board *Board) trioWinner(idx []byte) byte {
 	var last *byte = nil
 	for _, n := range idx {
-		x := n % 3
-		y := n / 3
+		x := int(n % 3)
+		y := int(n / 3)
 		cur := board.At(x, y)
 
 		if last != nil && *last != cur {
@@ -53,7 +53,15 @@ func (board *Board) trioWinner(idx []byte) byte {
 	return *last
 }
 
-func (board *Board) Move(x, y byte) error {
+func (board *Board) CurPlayerName() string {
+	if board.CurPlayer == 1 {
+		return "X"
+	} else {
+		return "O"
+	}
+}
+
+func (board *Board) Move(x, y int) error {
 	if board.grid[y][x] != 0 {
 		return errors.New(fmt.Sprintf("The space (%d,%d) is not empty", x, y))
 	}
@@ -63,23 +71,24 @@ func (board *Board) Move(x, y byte) error {
 	}
 
 	board.grid[y][x] = board.CurPlayer
-	if board.CurPlayer == 1 {
-		board.CurPlayer = 2
-	} else {
-		board.CurPlayer = 1
-	}
-
 	winner, found := board.computeWinner()
 	board.Winner = winner
 	board.GameOver = found
 
-	if !found {
-		for _, row := range board.grid {
-			for _, col := range row {
-				if col == 0 {
-					// Not a cat's game
-					return nil
+	if found {
+		return nil
+	}
+
+	for _, row := range board.grid {
+		for _, col := range row {
+			if col == 0 {
+				// Not a cat's game
+				if board.CurPlayer == 1 {
+					board.CurPlayer = 2
+				} else {
+					board.CurPlayer = 1
 				}
+				return nil
 			}
 		}
 	}
