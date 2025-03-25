@@ -11,6 +11,10 @@ build:
 	go build
 	./tic-tac-toe
 
+wgo:
+	GOARCH=wasm GOOS=js wgo go build -o $(BINARY_NAME) main.go \
+		:: GOARCH=arm64 GOOS=darwin wgo run main.go
+
 # Clean the binary
 clean:
 	go clean

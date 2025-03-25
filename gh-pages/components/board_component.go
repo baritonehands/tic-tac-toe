@@ -1,0 +1,60 @@
+package components
+
+import (
+	"fmt"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
+	"tic-tac-toe/gh-pages/models"
+)
+
+type Board struct {
+	app.Compo
+	model *models.Board
+}
+
+func NewBoard() *Board {
+	return &Board{
+		model: models.NewBoard(),
+	}
+}
+
+func (b *Board) Cell(x, y byte) app.UI {
+	text := "\u00A0"
+	classes := []string{"cell"}
+	if b.model.At(x, y) == 1 {
+		text = "X"
+		classes = append(classes, "X")
+	} else if b.model.At(x, y) == 2 {
+		text = "O"
+		classes = append(classes, "O")
+	}
+	return app.Div().Class(classes...).Text(text).OnClick(b.cellClickHandler(x, y))
+}
+
+func (b *Board) Row(y byte) app.UI {
+	return app.Div().Class(fmt.Sprintf("row%d", y+1)).Body(
+		b.Cell(0, y),
+		app.Div().Class("vertical").Text("\u00A0"),
+		b.Cell(1, y),
+		app.Div().Class("vertical").Text("\u00A0"),
+		b.Cell(2, y),
+	)
+}
+
+func (b *Board) Render() app.UI {
+	return app.Div().Body(
+		b.Row(0),
+		app.Div().Class("horizontal").Text("\u00A0"),
+		b.Row(1),
+		app.Div().Class("horizontal").Text("\u00A0"),
+		b.Row(2),
+	)
+}
+
+func (b *Board) cellClickHandler(x, y byte) app.EventHandler {
+	return func(ctx app.Context, e app.Event) {
+		err := b.model.Move(x, y)
+		if err != nil {
+			ctx.Reload()
+		}
+	}
+}

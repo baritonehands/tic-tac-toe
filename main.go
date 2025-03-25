@@ -11,26 +11,30 @@ import (
 // embedding app.Compo into a struct.
 type App struct {
 	app.Compo
+	boardComponent *components.Board
 }
 
 // The Render method is where the component appearance is defined. Here, a
 // "Hello World!" is displayed as a heading.
 func (h *App) Render() app.UI {
-	return app.Div().Class("app-container").Body(
+	return app.Div().Class("container").Body(
 		app.H1().Text("Hello World!"),
-		&components.Board{},
+		h.boardComponent,
 	)
 }
 
 func main() {
-	app.Route("/", func() app.Composer { return &App{} })
+	appInstance := App{
+		boardComponent: components.NewBoard(),
+	}
+	app.Route("/", func() app.Composer { return &appInstance })
 	app.RunWhenOnBrowser()
 
 	err := app.GenerateStaticWebsite("gh-pages/tic-tac-toe", &app.Handler{
 		Name:        "Tic Tac Toe",
 		Description: "A tic-tac-toe example",
 		Resources:   app.GitHubPages("tic-tac-toe"),
-		Styles:      []string{"/tic-tac-toe.css"},
+		Styles:      []string{"/web/tic-tac-toe.css"},
 	})
 
 	if err != nil {
