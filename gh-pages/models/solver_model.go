@@ -4,6 +4,7 @@ import (
 	"github.com/BooleanCat/go-functional/v2/it"
 	"github.com/BooleanCat/go-functional/v2/it/op"
 	"maps"
+	"math"
 )
 
 var solverCache = map[SolverCacheKey]map[byte]int{}
@@ -18,7 +19,7 @@ type SolverCacheKey struct {
 	asPlayer, level, idx byte
 }
 
-func (solver *Solver) Score() map[byte]int {
+func (solver *Solver) rawScore() map[byte]int {
 	if solver.Board.GameOver {
 		panic("Shouldn't happen!")
 	}
@@ -48,7 +49,7 @@ func (solver *Solver) Score() map[byte]int {
 				key.level = solver.Level - 1
 				var childScore map[byte]int
 				if foundScore, found := solverCache[key]; !found {
-					childScore = child.Score()
+					childScore = child.rawScore()
 					solverCache[key] = childScore
 				} else {
 					childScore = foundScore
@@ -59,4 +60,16 @@ func (solver *Solver) Score() map[byte]int {
 		}
 	}
 	return scores
+}
+
+func (solver *Solver) Score() map[byte]float64 {
+	rawScore := solver.rawScore()
+	total := it.Fold(maps.Values(rawScore), func(agg float64, v int) float64 {
+		return agg + math.Abs(float64(v))
+	}, 0.0)
+
+	return it.Fold2(maps.All(rawScore), func(agg map[byte]float64, k byte, v int) map[byte]float64 {
+		agg[k] = float64(v) / total
+		return agg
+	}, map[byte]float64{})
 }

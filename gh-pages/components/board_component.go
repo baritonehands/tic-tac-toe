@@ -2,7 +2,9 @@ package components
 
 import (
 	"fmt"
+	"github.com/BooleanCat/go-functional/v2/it"
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
+	"maps"
 	"tic-tac-toe/gh-pages/models"
 )
 
@@ -43,7 +45,11 @@ func (b *Board) Row(y int) app.UI {
 func (b *Board) Render() app.UI {
 	if !b.Model.GameOver {
 		solver := models.Solver{Board: b.Model, AsPlayer: b.Model.CurPlayer, Level: 9 - b.Model.Taken}
-		fmt.Printf("Player %c: %v\n", solver.AsPlayer, solver.Score())
+		score := solver.Score()
+		strScore := maps.Collect(it.Map2(maps.All(score), func(k byte, v float64) (byte, string) {
+			return k, fmt.Sprintf("%0.2f%%", v*100.0)
+		}))
+		fmt.Printf("Player %c: %v\n", solver.AsPlayer, strScore)
 	}
 	return app.Div().Body(
 		b.Row(0),
