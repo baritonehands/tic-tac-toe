@@ -22,7 +22,7 @@ func NewBoard() *Board {
 	return board
 }
 
-func coordToIndex(x, y int) int {
+func CoordToIndex(x, y int) int {
 	return x + y*3
 }
 
@@ -38,7 +38,7 @@ func (board *Board) Clone() *Board {
 }
 
 func (board *Board) At(x, y int) byte {
-	return board.grid[coordToIndex(x, y)]
+	return board.grid[CoordToIndex(x, y)]
 }
 
 func (board *Board) trioWinner(indexes []byte) byte {
@@ -55,7 +55,7 @@ func (board *Board) trioWinner(indexes []byte) byte {
 }
 
 func (board *Board) Move(x, y int) error {
-	idx := coordToIndex(x, y)
+	idx := CoordToIndex(x, y)
 	if board.grid[idx] != ' ' {
 		return errors.New(fmt.Sprintf("The space (%d,%d) is not empty", x, y))
 	}

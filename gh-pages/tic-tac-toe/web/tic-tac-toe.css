@@ -6,15 +6,7 @@
     box-sizing: border-box;
 }
 
-.row1 {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 5em;
-}
-
-.row2, .row3 {
+.row1, .row2, .row3 {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -39,6 +31,14 @@
     -webkit-text-stroke-color: #999;
     -webkit-text-stroke-width: 1px;
     font-family: monospace, monospace;
+}
+
+.cell.good {
+    background-color: darkgreen;
+}
+
+.cell.bad {
+    background-color: darkred;
 }
 
 .X {

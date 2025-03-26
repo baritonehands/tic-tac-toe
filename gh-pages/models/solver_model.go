@@ -14,9 +14,22 @@ type Solver struct {
 	AsPlayer, Level byte
 }
 
+func NewSolver(board *Board) *Solver {
+	return &Solver{
+		Board:    board,
+		AsPlayer: board.CurPlayer,
+		Level:    9 - board.Taken,
+	}
+}
+
 type SolverCacheKey struct {
 	grid                 string
 	asPlayer, level, idx byte
+}
+
+func (solver *Solver) BoardUpdated() {
+	solver.AsPlayer = solver.Board.CurPlayer
+	solver.Level = 9 - solver.Board.Taken
 }
 
 func (solver *Solver) rawScore() map[byte]int {
