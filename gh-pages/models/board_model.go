@@ -8,15 +8,16 @@ import (
 )
 
 type Board struct {
-	grid              string
-	CurPlayer, Winner byte
-	GameOver          bool
+	grid                     string
+	CurPlayer, Winner, Taken byte
+	GameOver                 bool
 }
 
 func NewBoard() *Board {
 	board := &Board{
 		grid:      "         ",
 		CurPlayer: 'X',
+		Taken:     0,
 	}
 	return board
 }
@@ -66,6 +67,7 @@ func (board *Board) Move(x, y int) error {
 	newGrid := []byte(board.grid)
 	newGrid[idx] = board.CurPlayer
 	board.grid = string(newGrid)
+	board.Taken = board.Taken + 1
 	winner, found := board.computeWinner()
 	board.Winner = winner
 	board.GameOver = found

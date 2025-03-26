@@ -106,3 +106,4 @@ go.work.sum
 
 gh-pages/tic-tac-toe
 !gh-pages/tic-tac-toe/web/tic-tac-toe.css
+tic-tac-toe

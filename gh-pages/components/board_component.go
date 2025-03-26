@@ -42,7 +42,7 @@ func (b *Board) Row(y int) app.UI {
 
 func (b *Board) Render() app.UI {
 	if !b.Model.GameOver {
-		solver := models.Solver{Board: b.Model, AsPlayer: b.Model.CurPlayer}
+		solver := models.Solver{Board: b.Model, AsPlayer: b.Model.CurPlayer, Level: 9 - b.Model.Taken}
 		fmt.Printf("Player %c: %v\n", solver.AsPlayer, solver.Score())
 	}
 	return app.Div().Body(
