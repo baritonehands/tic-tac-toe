@@ -8,61 +8,54 @@ import (
 )
 
 type Board struct {
-	grid              [][]byte
+	grid              string
 	CurPlayer, Winner byte
 	GameOver          bool
 }
 
 func NewBoard() *Board {
 	board := &Board{
-		grid: [][]byte{
-			{0, 0, 0}, {0, 0, 0}, {0, 0, 0},
-		},
-		CurPlayer: 1,
+		grid:      "         ",
+		CurPlayer: 'X',
 	}
 	return board
 }
 
+func coordToIndex(x, y int) int {
+	return x + y*3
+}
+
 func (board *Board) Clone() *Board {
 	newBoard := NewBoard()
-	for y, row := range board.grid {
-		for x := range row {
-			newBoard.grid[y][x] = board.grid[y][x]
-		}
+	newGrid := make([]byte, len(board.grid))
+	for idx, cell := range board.grid {
+		newGrid[idx] = byte(cell)
 	}
 	newBoard.CurPlayer = board.CurPlayer
+	newBoard.grid = string(newGrid)
 	return newBoard
 }
 
 func (board *Board) At(x, y int) byte {
-	return board.grid[y][x]
+	return board.grid[coordToIndex(x, y)]
 }
 
-func (board *Board) trioWinner(idx []byte) byte {
+func (board *Board) trioWinner(indexes []byte) byte {
 	var last *byte = nil
-	for _, n := range idx {
-		x := int(n % 3)
-		y := int(n / 3)
-		cur := board.At(x, y)
+	for _, n := range indexes {
+		cur := board.grid[n]
 
 		if last != nil && *last != cur {
-			return 0
+			return ' '
 		}
 		last = &cur
 	}
 	return *last
 }
 
-func (board *Board) CurPlayerName() string {
-	if board.CurPlayer == 1 {
-		return "X"
-	} else {
-		return "O"
-	}
-}
-
 func (board *Board) Move(x, y int) error {
-	if board.grid[y][x] != 0 {
+	idx := coordToIndex(x, y)
+	if board.grid[idx] != ' ' {
 		return errors.New(fmt.Sprintf("The space (%d,%d) is not empty", x, y))
 	}
 
@@ -70,7 +63,9 @@ func (board *Board) Move(x, y int) error {
 		return errors.New(fmt.Sprintf("The game is over"))
 	}
 
-	board.grid[y][x] = board.CurPlayer
+	newGrid := []byte(board.grid)
+	newGrid[idx] = board.CurPlayer
+	board.grid = string(newGrid)
 	winner, found := board.computeWinner()
 	board.Winner = winner
 	board.GameOver = found
@@ -79,17 +74,15 @@ func (board *Board) Move(x, y int) error {
 		return nil
 	}
 
-	for _, row := range board.grid {
-		for _, col := range row {
-			if col == 0 {
-				// Not a cat's game
-				if board.CurPlayer == 1 {
-					board.CurPlayer = 2
-				} else {
-					board.CurPlayer = 1
-				}
-				return nil
+	for _, cell := range board.grid {
+		if cell == ' ' {
+			// Not a cat's game
+			if board.CurPlayer == 'X' {
+				board.CurPlayer = 'O'
+			} else {
+				board.CurPlayer = 'X'
 			}
+			return nil
 		}
 	}
 	board.GameOver = true
@@ -106,6 +99,6 @@ var combos = [][]byte{
 func (board *Board) computeWinner() (byte, bool) {
 	comboWinners := it.Map(slices.Values(combos), board.trioWinner)
 	return it.Find(comboWinners, func(winner byte) bool {
-		return winner != 0
+		return winner != ' '
 	})
 }

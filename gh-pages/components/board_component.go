@@ -20,10 +20,10 @@ func NewBoard() *Board {
 func (b *Board) Cell(x, y int) app.UI {
 	text := "\u00A0"
 	classes := []string{"cell"}
-	if b.Model.At(x, y) == 1 {
+	if b.Model.At(x, y) == 'X' {
 		text = "X"
 		classes = append(classes, "X")
-	} else if b.Model.At(x, y) == 2 {
+	} else if b.Model.At(x, y) == 'O' {
 		text = "O"
 		classes = append(classes, "O")
 	}
@@ -43,7 +43,7 @@ func (b *Board) Row(y int) app.UI {
 func (b *Board) Render() app.UI {
 	if !b.Model.GameOver {
 		solver := models.Solver{Board: b.Model, AsPlayer: b.Model.CurPlayer}
-		fmt.Printf("Player %d: %v\n", solver.AsPlayer, solver.Score())
+		fmt.Printf("Player %c: %v\n", solver.AsPlayer, solver.Score())
 	}
 	return app.Div().Body(
 		b.Row(0),
