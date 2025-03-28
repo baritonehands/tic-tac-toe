@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var solverCache = map[SolverCacheKey]map[byte]int{}
+var SolverCache = map[SolverCacheKey]map[byte]int{}
 
 type Solver struct {
 	Board           *Board
@@ -27,6 +27,10 @@ func NewSolver(board *Board) *Solver {
 type SolverCacheKey struct {
 	grid          string
 	asPlayer, idx byte
+}
+
+func (s SolverCacheKey) String() string {
+	return fmt.Sprintf("P%c %d: %v", s.asPlayer, s.idx, s.grid)
 }
 
 func (solver *Solver) BoardUpdated() {
@@ -63,10 +67,10 @@ func (solver *Solver) rawScore() map[byte]int {
 					fmt.Println(childBoard)
 				}
 				if childBoard.Winner == solver.AsPlayer {
-					scores[byte(idx)] = 1
+					scores[byte(idx)] = int(solver.Level)
 					anyWinner = true
 				} else if childBoard.Winner != 0 {
-					scores[byte(idx)] = -1
+					scores[byte(idx)] = -int(solver.Level)
 					anyWinner = true
 				}
 			}
@@ -93,9 +97,9 @@ func (solver *Solver) rawScore() map[byte]int {
 			key.idx = byte(idx)
 			//key.level = solver.Level - 1
 			var childScore map[byte]int
-			if foundScore, found := solverCache[key]; !found {
+			if foundScore, found := SolverCache[key]; !found {
 				childScore = childSolver.rawScore()
-				solverCache[key] = childScore
+				SolverCache[key] = childScore
 			} else {
 				childScore = foundScore
 			}
