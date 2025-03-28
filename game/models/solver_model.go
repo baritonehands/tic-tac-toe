@@ -67,10 +67,10 @@ func (solver *Solver) rawScore() map[byte]int {
 					fmt.Println(childBoard)
 				}
 				if childBoard.Winner == solver.AsPlayer {
-					scores[byte(idx)] = int(solver.Level)
+					scores[byte(idx)] = 1 << (int(solver.Level) - 1)
 					anyWinner = true
 				} else if childBoard.Winner != 0 {
-					scores[byte(idx)] = -int(solver.Level)
+					scores[byte(idx)] = -(1 << (int(solver.Level) - 1))
 					anyWinner = true
 				}
 			}
