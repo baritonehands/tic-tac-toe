@@ -6,7 +6,7 @@ import (
 	"github.com/maxence-charriere/go-app/v10/pkg/app"
 	"maps"
 	"math"
-	"tic-tac-toe/gh-pages/models"
+	"tic-tac-toe/game/models"
 )
 
 type Board struct {
@@ -36,7 +36,7 @@ func (b *Board) Cell(x, y int) app.UI {
 		text = "O"
 		classes = append(classes, "O")
 	} else {
-		score := b.Scores[byte(idx)] * 100.0
+		score := b.Scores[byte(idx)] * 200.0
 		styles["opacity"] = fmt.Sprintf("%0.2f%%", math.Abs(score))
 		if score < 0 {
 			classes = append(classes, "bad")

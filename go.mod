@@ -1,8 +1,6 @@
 module tic-tac-toe
 
-go 1.23.0
-
-toolchain go1.23.2
+go 1.24.1
 
 require (
 	github.com/BooleanCat/go-functional/v2 v2.5.0 // indirect

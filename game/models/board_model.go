@@ -15,7 +15,7 @@ type Board struct {
 
 func NewBoard() *Board {
 	board := &Board{
-		grid:      "         ",
+		grid:      ".........",
 		CurPlayer: 'X',
 		Taken:     0,
 	}
@@ -47,7 +47,7 @@ func (board *Board) trioWinner(indexes []byte) byte {
 		cur := board.grid[n]
 
 		if last != nil && *last != cur {
-			return ' '
+			return '.'
 		}
 		last = &cur
 	}
@@ -56,7 +56,7 @@ func (board *Board) trioWinner(indexes []byte) byte {
 
 func (board *Board) Move(x, y int) error {
 	idx := CoordToIndex(x, y)
-	if board.grid[idx] != ' ' {
+	if board.grid[idx] != '.' {
 		return errors.New(fmt.Sprintf("The space (%d,%d) is not empty", x, y))
 	}
 
@@ -77,7 +77,7 @@ func (board *Board) Move(x, y int) error {
 	}
 
 	for _, cell := range board.grid {
-		if cell == ' ' {
+		if cell == '.' {
 			// Not a cat's game
 			if board.CurPlayer == 'X' {
 				board.CurPlayer = 'O'
@@ -101,6 +101,6 @@ var combos = [][]byte{
 func (board *Board) computeWinner() (byte, bool) {
 	comboWinners := it.Map(slices.Values(combos), board.trioWinner)
 	return it.Find(comboWinners, func(winner byte) bool {
-		return winner != ' '
+		return winner != '.'
 	})
 }

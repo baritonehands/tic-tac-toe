@@ -6,19 +6,19 @@ all: build
 
 # Build the application
 build:
-	GOARCH=wasm GOOS=js go build -o $(BINARY_NAME) main.go
+	GOARCH=wasm GOOS=js go build -o $(BINARY_NAME) main_wasm.go
 
-	go build
-	./tic-tac-toe
+	go run main.go
 
 wgo:
-	GOARCH=wasm GOOS=js wgo go build -o $(BINARY_NAME) main.go \
+	GOARCH=wasm GOOS=js wgo go build -o $(BINARY_NAME) main_wasm.go \
 		:: GOARCH=arm64 GOOS=darwin wgo run main.go
 
 # Clean the binary
 clean:
 	go clean
 	rm -f $(BINARY_NAME)
+	rm gh-pages/tic-tac-toe/*
 
 # Format code
 fmt:
